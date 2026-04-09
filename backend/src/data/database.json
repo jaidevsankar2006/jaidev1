@@ -1,0 +1,145 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "name": "Admin User",
+      "email": "admin@retailflow.com",
+      "passwordHash": "e86f78a8a3caf0b60d8e74e5942aa6d86dc150cd3c03338aef25b7d2d7e3acc7",
+      "role": "admin"
+    },
+    {
+      "id": "user-2",
+      "name": "Store Staff",
+      "email": "staff@retailflow.com",
+      "passwordHash": "dfd48f36338aa36228ebb9e204bba6b4e18db0b623e25c458901edc831fb18e9",
+      "role": "staff"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-1",
+      "name": "Beverages"
+    },
+    {
+      "id": "cat-2",
+      "name": "Snacks"
+    },
+    {
+      "id": "cat-3",
+      "name": "Personal Care"
+    }
+  ],
+  "suppliers": [
+    {
+      "id": "sup-1",
+      "name": "FreshMart Distributors",
+      "contactPerson": "Rina Paul",
+      "phone": "+91 90000 12345",
+      "email": "sales@freshmart.example",
+      "location": "Kolkata"
+    },
+    {
+      "id": "sup-2",
+      "name": "Prime Wholesale Hub",
+      "contactPerson": "Akash Roy",
+      "phone": "+91 90000 67890",
+      "email": "orders@primehub.example",
+      "location": "Bengaluru"
+    },
+    {
+      "id": "sup-e4cd0097",
+      "name": "dhggy",
+      "contactPerson": "uiahihi",
+      "phone": "fuiadhfyuf",
+      "email": "jaidevsa@gmail.com",
+      "location": "jfhfusdhf"
+    }
+  ],
+  "products": [
+    {
+      "id": "prod-1",
+      "name": "Orange Juice 1L",
+      "sku": "BEV-001",
+      "categoryId": "cat-1",
+      "supplierId": "sup-1",
+      "price": 120,
+      "quantity": 26,
+      "minStock": 15,
+      "maxStock": 80
+    },
+    {
+      "id": "prod-2",
+      "name": "Salted Chips 200g",
+      "sku": "SNK-004",
+      "categoryId": "cat-2",
+      "supplierId": "sup-2",
+      "price": 40,
+      "quantity": 12,
+      "minStock": 18,
+      "maxStock": 100
+    },
+    {
+      "id": "prod-3",
+      "name": "Hand Wash 500ml",
+      "sku": "CARE-010",
+      "categoryId": "cat-3",
+      "supplierId": "sup-1",
+      "price": 90,
+      "quantity": 58,
+      "minStock": 10,
+      "maxStock": 55
+    },
+    {
+      "id": "prod-14b73ee4",
+      "name": "efjhd",
+      "sku": "njdnj",
+      "categoryId": "cat-1",
+      "supplierId": "sup-1",
+      "price": 3333,
+      "quantity": 0,
+      "minStock": 0,
+      "maxStock": 10
+    }
+  ],
+  "purchases": [
+    {
+      "id": "pur-1",
+      "productId": "prod-1",
+      "supplierId": "sup-1",
+      "quantity": 30,
+      "unitCost": 85,
+      "date": "2026-03-20"
+    },
+    {
+      "id": "pur-2",
+      "productId": "prod-2",
+      "supplierId": "sup-2",
+      "quantity": 45,
+      "unitCost": 22,
+      "date": "2026-03-22"
+    }
+  ],
+  "sales": [
+    {
+      "id": "sale-1",
+      "productId": "prod-1",
+      "quantity": 12,
+      "unitPrice": 120,
+      "date": "2026-03-26"
+    },
+    {
+      "id": "sale-2",
+      "productId": "prod-2",
+      "quantity": 18,
+      "unitPrice": 40,
+      "date": "2026-03-28"
+    },
+    {
+      "id": "sale-3",
+      "productId": "prod-3",
+      "quantity": 7,
+      "unitPrice": 90,
+      "date": "2026-04-01"
+    }
+  ]
+}

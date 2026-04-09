@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.env
+coverage/
+
+backend/node_modules/
+frontend/node_modules/
+frontend/dist/
+
+_docx_extract/
+_docx_extract.zip
+/package-lock.json
