@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "/api";
 
 async function parseResponse(response) {
   const payload = await response.json();
@@ -22,6 +22,18 @@ export async function login(credentials) {
   return parseResponse(response);
 }
 
+export async function register(payload) {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  return parseResponse(response);
+}
+
 export async function fetchBootstrapData() {
   const response = await fetch(`${API_BASE_URL}/inventory/bootstrap`);
   return parseResponse(response);
@@ -34,6 +46,26 @@ export async function createRecord(path, payload) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(payload)
+  });
+
+  return parseResponse(response);
+}
+
+export async function updateRecord(path, payload) {
+  const response = await fetch(`${API_BASE_URL}/inventory/${path}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  return parseResponse(response);
+}
+
+export async function deleteRecord(path) {
+  const response = await fetch(`${API_BASE_URL}/inventory/${path}`, {
+    method: "DELETE",
   });
 
   return parseResponse(response);

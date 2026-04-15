@@ -6,7 +6,7 @@ Full-stack final project starter for managing retail stock, suppliers, purchases
 
 - Frontend: React + Vite
 - Backend: Node.js + Express
-- Data store: Local JSON file for demo use
+- Data store: MySQL
 
 ## Features
 
@@ -27,7 +27,26 @@ Full-stack final project starter for managing retail stock, suppliers, purchases
 ```bash
 cd backend
 npm install
+copy .env.example .env
 npm run dev
+```
+
+## MySQL Setup
+
+1. Create a MySQL database by importing [schema.sql](D:\optimized retail inventiry management system\backend\database\schema.sql)
+2. Seed demo data from [seed.sql](D:\optimized retail inventiry management system\backend\database\seed.sql)
+3. Update your backend `.env` with MySQL credentials
+
+Example `.env` values:
+
+```env
+PORT=5000
+FRONTEND_URL=http://localhost:5173
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=optimized_retail_inventory
 ```
 
 ## Run The Frontend
@@ -40,5 +59,5 @@ npm run dev
 
 ## Notes
 
-- The backend stores demo data in [backend/src/data/database.json](C:\Users\jaide\OneDrive\Documents\optimized retail inventiry management system\backend\src\data\database.json).
-- The project is structured so you can later swap the JSON store with MongoDB without changing the frontend.
+- The backend now reads and writes directly to MySQL using `mysql2`.
+- Demo accounts are seeded into MySQL through [seed.sql](D:\optimized retail inventiry management system\backend\database\seed.sql).

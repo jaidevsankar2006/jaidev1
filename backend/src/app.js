@@ -9,7 +9,25 @@ const app = express();
 
 app.use(
   cors({
-    origin: env.frontendUrl,
+    origin(origin, callback) {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      const allowedOrigins = new Set([
+        env.frontendUrl,
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+      ]);
+
+      if (allowedOrigins.has(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
   }),
 );
 app.use(express.json());

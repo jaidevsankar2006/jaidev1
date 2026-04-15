@@ -6,6 +6,10 @@ function average(numbers) {
   return numbers.reduce((sum, value) => sum + value, 0) / numbers.length;
 }
 
+function buildLookup(items) {
+  return Object.fromEntries(items.map((item) => [item.id, item]));
+}
+
 export function enrichProducts(database) {
   return database.products.map((product) => {
     const sales = database.sales.filter((sale) => sale.productId === product.id);
@@ -37,6 +41,36 @@ export function enrichProducts(database) {
   });
 }
 
+export function enrichTransactions(database) {
+  const productLookup = buildLookup(database.products);
+  const supplierLookup = buildLookup(database.suppliers);
+
+  const purchases = database.purchases.map((purchase) => ({
+    ...purchase,
+    productName: productLookup[purchase.productId]?.name || "Unknown product",
+    supplierName: supplierLookup[purchase.supplierId]?.name || "Unknown supplier",
+    totalCost: Number((purchase.quantity * purchase.unitCost).toFixed(2)),
+    type: "purchase",
+  }));
+
+  const sales = database.sales.map((sale) => ({
+    ...sale,
+    productName: productLookup[sale.productId]?.name || "Unknown product",
+    totalRevenue: Number((sale.quantity * sale.unitPrice).toFixed(2)),
+    type: "sale",
+  }));
+
+  const recentMovements = [...purchases, ...sales]
+    .sort((left, right) => new Date(right.date) - new Date(left.date))
+    .slice(0, 8);
+
+  return {
+    purchases,
+    sales,
+    recentMovements,
+  };
+}
+
 export function buildDashboard(database) {
   const products = enrichProducts(database);
   const totalStockValue = products.reduce((sum, product) => sum + product.stockValue, 0);
@@ -61,6 +95,7 @@ export function buildDashboard(database) {
       totalProducts: products.length,
       totalUnits,
       totalSuppliers: database.suppliers.length,
+      totalCategories: database.categories.length,
       totalSalesRevenue,
       totalPurchaseSpend,
       totalStockValue: Number(totalStockValue.toFixed(2)),
@@ -72,6 +107,10 @@ export function buildDashboard(database) {
       overstock,
     },
     topSelling,
+    reorderQueue: [...products]
+      .filter((product) => product.suggestedReorderQty > 0)
+      .sort((left, right) => right.suggestedReorderQty - left.suggestedReorderQty)
+      .slice(0, 5),
   };
 }
 

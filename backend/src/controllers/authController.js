@@ -1,5 +1,10 @@
-import { readDatabase } from "../data/store.js";
+import crypto from "node:crypto";
+import { createUserRecord, findUserByEmail } from "../data/store.js";
 import { hashText } from "../utils/hash.js";
+
+function createId(prefix) {
+  return `${prefix}-${crypto.randomBytes(4).toString("hex")}`;
+}
 
 export async function login(request, response, next) {
   try {
@@ -11,8 +16,7 @@ export async function login(request, response, next) {
       throw error;
     }
 
-    const database = await readDatabase();
-    const user = database.users.find((entry) => entry.email === email);
+    const user = await findUserByEmail(email);
 
     if (!user || user.passwordHash !== hashText(password)) {
       const error = new Error("Invalid credentials.");
@@ -28,6 +32,57 @@ export async function login(request, response, next) {
         role: user.role
       },
       token: `demo-token-${user.role}`
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function register(request, response, next) {
+  try {
+    const name = String(request.body.name || "").trim();
+    const email = String(request.body.email || "").trim().toLowerCase();
+    const password = String(request.body.password || "");
+    const role = "staff";
+
+    if (!name || !email || !password) {
+      const error = new Error("Name, email, and password are required.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (password.length < 6) {
+      const error = new Error("Password must be at least 6 characters.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const existingUser = await findUserByEmail(email);
+
+    if (existingUser) {
+      const error = new Error("An account with this email already exists.");
+      error.statusCode = 409;
+      throw error;
+    }
+
+    const user = {
+      id: createId("user"),
+      name,
+      email,
+      role,
+      passwordHash: hashText(password),
+    };
+
+    await createUserRecord(user);
+
+    response.status(201).json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      token: `demo-token-${user.role}`,
     });
   } catch (error) {
     next(error);

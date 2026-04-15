@@ -30,14 +30,43 @@ function ProductForm({ categories, suppliers, form, onChange, onSubmit }) {
   );
 }
 
+function QuantityEditor({ product, value, onChange, onSave, onCancel }) {
+  return (
+    <div className="quantity-editor">
+      <input
+        className="quantity-input"
+        min="0"
+        onChange={(event) => onChange(product.id, event.target.value)}
+        type="number"
+        value={value}
+      />
+      <div className="quantity-actions">
+        <button className="mini-button" onClick={() => onSave(product)} type="button">
+          Save
+        </button>
+        <button className="ghost-button" onClick={() => onCancel(product)} type="button">
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function ProductsPanel({
   products,
   categories,
   suppliers,
   categoryMap,
   supplierMap,
+  filters,
   form,
+  onDelete,
+  onQuantityChange,
+  onQuantityReset,
+  onQuantitySave,
+  quantityDrafts,
   onChange,
+  onFilterChange,
   onSubmit
 }) {
   return (
@@ -45,6 +74,28 @@ export function ProductsPanel({
       <div className="panel-header">
         <h2>Products</h2>
         <span>{products.length} records</span>
+      </div>
+      <div className="filters-grid">
+        <input
+          name="search"
+          value={filters.search}
+          onChange={onFilterChange}
+          placeholder="Search by name or SKU"
+        />
+        <select name="status" value={filters.status} onChange={onFilterChange}>
+          <option value="">All statuses</option>
+          <option value="Low Stock">Low Stock</option>
+          <option value="Healthy">Healthy</option>
+          <option value="Overstock">Overstock</option>
+        </select>
+        <select name="categoryId" value={filters.categoryId} onChange={onFilterChange}>
+          <option value="">All categories</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
       </div>
       <ProductForm
         categories={categories}
@@ -64,6 +115,7 @@ export function ProductsPanel({
               <th>Qty</th>
               <th>Status</th>
               <th>Reorder</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -73,13 +125,30 @@ export function ProductsPanel({
                 <td>{product.sku}</td>
                 <td>{categoryMap[product.categoryId] || "-"}</td>
                 <td>{supplierMap[product.supplierId] || "-"}</td>
-                <td>{product.quantity}</td>
+                <td>
+                  <QuantityEditor
+                    onCancel={onQuantityReset}
+                    onChange={onQuantityChange}
+                    onSave={onQuantitySave}
+                    product={product}
+                    value={quantityDrafts[product.id] ?? product.quantity}
+                  />
+                </td>
                 <td>
                   <span className={`pill ${product.status.toLowerCase().replace(" ", "-")}`}>
                     {product.status}
                   </span>
                 </td>
                 <td>{product.suggestedReorderQty}</td>
+                <td>
+                  <button
+                    className="danger-button"
+                    onClick={() => onDelete(product)}
+                    type="button"
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -1,17 +1,31 @@
 import { useEffect, useState } from "react";
-import { createRecord, fetchBootstrapData, login } from "./api/client.js";
+import { createRecord, deleteRecord, fetchBootstrapData, login, register, updateRecord } from "./api/client.js";
 import { AlertsPanel } from "./components/AlertsPanel.jsx";
+import { CategoriesPanel } from "./components/CategoriesPanel.jsx";
 import { InsightsPanel } from "./components/InsightsPanel.jsx";
 import { LoginScreen } from "./components/LoginScreen.jsx";
 import { ProductsPanel } from "./components/ProductsPanel.jsx";
+import { RecentActivityPanel } from "./components/RecentActivityPanel.jsx";
+import { ReportsPanel } from "./components/ReportsPanel.jsx";
 import { StatCards } from "./components/StatCards.jsx";
 import { SuppliersPanel } from "./components/SuppliersPanel.jsx";
 import { TransactionsPanel } from "./components/TransactionsPanel.jsx";
+import { UserInventoryPanel } from "./components/UserInventoryPanel.jsx";
 import "./styles/app.css";
 
 const initialLoginForm = {
-  email: "admin@retailflow.com",
-  password: "Admin@123"
+  email: "",
+  password: ""
+};
+
+const initialRegisterForm = {
+  name: "",
+  email: "",
+  password: ""
+};
+
+const emptyCategoryForm = {
+  name: ""
 };
 
 const emptyProductForm = {
@@ -33,19 +47,25 @@ const emptySupplierForm = {
   location: ""
 };
 
-const emptyPurchaseForm = {
+const createInitialPurchaseForm = () => ({
   productId: "",
   supplierId: "",
   quantity: "",
   unitCost: "",
   date: new Date().toISOString().slice(0, 10)
-};
+});
 
-const emptySaleForm = {
+const createInitialSaleForm = () => ({
   productId: "",
   quantity: "",
   unitPrice: "",
   date: new Date().toISOString().slice(0, 10)
+});
+
+const initialFilters = {
+  search: "",
+  status: "",
+  categoryId: ""
 };
 
 function createMap(items) {
@@ -53,17 +73,25 @@ function createMap(items) {
 }
 
 export default function App() {
+  const [authMode, setAuthMode] = useState("login");
   const [authForm, setAuthForm] = useState(initialLoginForm);
+  const [registerForm, setRegisterForm] = useState(initialRegisterForm);
   const [user, setUser] = useState(null);
   const [loginError, setLoginError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [registerError, setRegisterError] = useState("");
+  const [authNotice, setAuthNotice] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const [bootstrap, setBootstrap] = useState(null);
   const [feedback, setFeedback] = useState("");
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState(initialFilters);
+  const [categoryForm, setCategoryForm] = useState(emptyCategoryForm);
   const [productForm, setProductForm] = useState(emptyProductForm);
   const [supplierForm, setSupplierForm] = useState(emptySupplierForm);
-  const [purchaseForm, setPurchaseForm] = useState(emptyPurchaseForm);
-  const [saleForm, setSaleForm] = useState(emptySaleForm);
+  const [purchaseForm, setPurchaseForm] = useState(createInitialPurchaseForm());
+  const [saleForm, setSaleForm] = useState(createInitialSaleForm());
+  const [quantityDrafts, setQuantityDrafts] = useState({});
 
   useEffect(() => {
     if (!user) {
@@ -92,25 +120,95 @@ export default function App() {
 
   async function handleLogin(event) {
     event.preventDefault();
-    setIsSubmitting(true);
+    setIsLoggingIn(true);
 
     try {
       const result = await login(authForm);
       setUser(result.user);
       setLoginError("");
+      setRegisterError("");
+      setAuthNotice("");
     } catch (requestError) {
       setLoginError(requestError.message);
     } finally {
-      setIsSubmitting(false);
+      setIsLoggingIn(false);
     }
   }
 
-  async function handleCreate(path, payload, resetForm) {
+  async function handleRegister(event) {
+    event.preventDefault();
+    setIsRegistering(true);
+
+    try {
+      await register(registerForm);
+      setRegisterForm(initialRegisterForm);
+      setRegisterError("");
+      setLoginError("");
+      setAuthMode("login");
+      setAuthNotice("Account created successfully. You can log in now.");
+    } catch (requestError) {
+      setRegisterError(requestError.message);
+    } finally {
+      setIsRegistering(false);
+    }
+  }
+
+  async function handleCreate(path, payload, resetForm, successLabel) {
     try {
       await createRecord(path, payload);
       await refreshData();
       resetForm();
-      setFeedback(`${path.slice(0, -1)} saved successfully.`);
+      setFeedback(`${successLabel} saved successfully.`);
+      setError("");
+    } catch (requestError) {
+      setError(requestError.message);
+      setFeedback("");
+    }
+  }
+
+  async function handleDeleteProduct(product) {
+    const confirmed = window.confirm(
+      `Delete ${product.name}? Products with sales or purchase history cannot be deleted.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const result = await deleteRecord(`products/${product.id}`);
+      await refreshData();
+      setFeedback(result.message || `${product.name} deleted successfully.`);
+      setError("");
+    } catch (requestError) {
+      setError(requestError.message);
+      setFeedback("");
+    }
+  }
+
+  function handleQuantityDraftChange(productId, value) {
+    setQuantityDrafts((current) => ({
+      ...current,
+      [productId]: value,
+    }));
+  }
+
+  function handleQuantityDraftReset(product) {
+    setQuantityDrafts((current) => ({
+      ...current,
+      [product.id]: String(product.quantity),
+    }));
+  }
+
+  async function handleQuantitySave(product) {
+    const nextQuantity = quantityDrafts[product.id] ?? String(product.quantity);
+
+    try {
+      const result = await updateRecord(`products/${product.id}/quantity`, {
+        quantity: Number(nextQuantity),
+      });
+      await refreshData();
+      setFeedback(result.message || `${product.name} quantity updated successfully.`);
       setError("");
     } catch (requestError) {
       setError(requestError.message);
@@ -121,11 +219,24 @@ export default function App() {
   if (!user) {
     return (
       <LoginScreen
-        form={authForm}
-        error={loginError}
-        isSubmitting={isSubmitting}
-        onChange={handleInputChange(setAuthForm)}
-        onSubmit={handleLogin}
+        authMode={authMode}
+        loginForm={authForm}
+        registerForm={registerForm}
+        loginError={loginError}
+        registerError={registerError}
+        notice={authNotice}
+        isLoggingIn={isLoggingIn}
+        isRegistering={isRegistering}
+        onModeChange={(mode) => {
+          setAuthMode(mode);
+          setLoginError("");
+          setRegisterError("");
+          setAuthNotice("");
+        }}
+        onLoginChange={handleInputChange(setAuthForm)}
+        onRegisterChange={handleInputChange(setRegisterForm)}
+        onLoginSubmit={handleLogin}
+        onRegisterSubmit={handleRegister}
       />
     );
   }
@@ -136,6 +247,17 @@ export default function App() {
 
   const categoryMap = createMap(bootstrap.categories);
   const supplierMap = createMap(bootstrap.suppliers);
+  const normalizedSearch = filters.search.trim().toLowerCase();
+  const filteredProducts = bootstrap.products.filter((product) => {
+    const matchesSearch =
+      !normalizedSearch ||
+      product.name.toLowerCase().includes(normalizedSearch) ||
+      product.sku.toLowerCase().includes(normalizedSearch);
+    const matchesStatus = !filters.status || product.status === filters.status;
+    const matchesCategory = !filters.categoryId || product.categoryId === filters.categoryId;
+
+    return matchesSearch && matchesStatus && matchesCategory;
+  });
 
   return (
     <main className="app-shell">
@@ -144,9 +266,13 @@ export default function App() {
           <p className="eyebrow">Optimized Retail Inventory Management System</p>
           <h1>Welcome back, {user.name}</h1>
           <p className="muted">
-            Track stock movement, reduce shortages, and present live inventory
-            insights for your final project demo.
+            Manage products, suppliers, live stock movement, and reorder insights
+            from one full-stack dashboard.
           </p>
+          <div className="hero-meta">
+            <span className="tag-chip">Role: {user.role}</span>
+            <span className="tag-chip">Frontend + Backend ready</span>
+          </div>
         </div>
         <button
           className="secondary-button"
@@ -164,51 +290,98 @@ export default function App() {
       {error ? <p className="error-banner">{error}</p> : null}
 
       <StatCards stats={bootstrap.dashboard.stats} />
+      <ReportsPanel
+        stats={bootstrap.dashboard.stats}
+        reorderQueue={bootstrap.dashboard.reorderQueue}
+        recentMovements={bootstrap.recentMovements}
+      />
       <AlertsPanel alerts={bootstrap.dashboard.alerts} />
-      <InsightsPanel products={bootstrap.products} topSelling={bootstrap.dashboard.topSelling} />
-
-      <ProductsPanel
+      <InsightsPanel
         products={bootstrap.products}
-        categories={bootstrap.categories}
-        suppliers={bootstrap.suppliers}
-        categoryMap={categoryMap}
-        supplierMap={supplierMap}
+        topSelling={bootstrap.dashboard.topSelling}
+      />
+
+      {user.role === "admin" ? (
+        <>
+          <section className="panel-grid two-up">
+            <CategoriesPanel
+              categories={bootstrap.categories}
+              form={categoryForm}
+              onChange={handleInputChange(setCategoryForm)}
+              onSubmit={(event) => {
+                event.preventDefault();
+                void handleCreate("categories", categoryForm, () => setCategoryForm(emptyCategoryForm), "Category");
+              }}
+            />
+
+            <SuppliersPanel
+              suppliers={bootstrap.suppliers}
+              form={supplierForm}
+              onChange={handleInputChange(setSupplierForm)}
+              onSubmit={(event) => {
+                event.preventDefault();
+                void handleCreate("suppliers", supplierForm, () => setSupplierForm(emptySupplierForm), "Supplier");
+              }}
+            />
+          </section>
+
+          <ProductsPanel
+            products={filteredProducts}
+            categories={bootstrap.categories}
+            suppliers={bootstrap.suppliers}
+            categoryMap={categoryMap}
+            supplierMap={supplierMap}
+        filters={filters}
         form={productForm}
+        onDelete={(product) => {
+          void handleDeleteProduct(product);
+        }}
+        onQuantityChange={handleQuantityDraftChange}
+        onQuantityReset={handleQuantityDraftReset}
+        onQuantitySave={(product) => {
+          void handleQuantitySave(product);
+        }}
+        quantityDrafts={quantityDrafts}
         onChange={handleInputChange(setProductForm)}
+        onFilterChange={handleInputChange(setFilters)}
         onSubmit={(event) => {
-          event.preventDefault();
-          void handleCreate("products", productForm, () => setProductForm(emptyProductForm));
-        }}
-      />
+              event.preventDefault();
+              void handleCreate("products", productForm, () => setProductForm(emptyProductForm), "Product");
+            }}
+          />
 
-      <SuppliersPanel
-        suppliers={bootstrap.suppliers}
-        form={supplierForm}
-        onChange={handleInputChange(setSupplierForm)}
-        onSubmit={(event) => {
-          event.preventDefault();
-          void handleCreate("suppliers", supplierForm, () => setSupplierForm(emptySupplierForm));
-        }}
-      />
-
-      <TransactionsPanel
-        products={bootstrap.products}
-        suppliers={bootstrap.suppliers}
-        purchaseForm={purchaseForm}
-        saleForm={saleForm}
-        onPurchaseChange={handleInputChange(setPurchaseForm)}
-        onSaleChange={handleInputChange(setSaleForm)}
-        onPurchaseSubmit={(event) => {
-          event.preventDefault();
-          void handleCreate("purchases", purchaseForm, () => setPurchaseForm(emptyPurchaseForm));
-        }}
-        onSaleSubmit={(event) => {
-          event.preventDefault();
-          void handleCreate("sales", saleForm, () => setSaleForm(emptySaleForm));
-        }}
-        purchases={bootstrap.purchases}
-        sales={bootstrap.sales}
-      />
+          <TransactionsPanel
+            products={bootstrap.products}
+            suppliers={bootstrap.suppliers}
+            purchaseForm={purchaseForm}
+            saleForm={saleForm}
+            onPurchaseChange={handleInputChange(setPurchaseForm)}
+            onSaleChange={handleInputChange(setSaleForm)}
+            onPurchaseSubmit={(event) => {
+              event.preventDefault();
+              void handleCreate("purchases", purchaseForm, () => setPurchaseForm(createInitialPurchaseForm()), "Purchase");
+            }}
+            onSaleSubmit={(event) => {
+              event.preventDefault();
+              void handleCreate("sales", saleForm, () => setSaleForm(createInitialSaleForm()), "Sale");
+            }}
+            purchases={bootstrap.purchases}
+            sales={bootstrap.sales}
+          />
+        </>
+      ) : (
+        <>
+          <UserInventoryPanel
+            products={filteredProducts}
+            categoryMap={categoryMap}
+            supplierMap={supplierMap}
+          />
+          <RecentActivityPanel
+            purchases={bootstrap.purchases}
+            sales={bootstrap.sales}
+          />
+        </>
+      )}
     </main>
   );
 }

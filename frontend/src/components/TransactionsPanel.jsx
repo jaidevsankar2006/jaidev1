@@ -92,10 +92,11 @@ export function TransactionsPanel({
         <div className="list-stack">
           {purchases.slice(0, 5).map((purchase) => (
             <div className="list-row" key={purchase.id}>
-              <strong>{purchase.productId}</strong>
-              <span>
-                {purchase.quantity} units on {purchase.date}
-              </span>
+              <div>
+                <strong>{purchase.productName}</strong>
+                <p className="muted">{purchase.supplierName}</p>
+              </div>
+              <span>{purchase.quantity} units on {purchase.date}</span>
             </div>
           ))}
         </div>
@@ -108,10 +109,11 @@ export function TransactionsPanel({
         <div className="list-stack">
           {sales.slice(0, 5).map((sale) => (
             <div className="list-row" key={sale.id}>
-              <strong>{sale.productId}</strong>
-              <span>
-                {sale.quantity} units on {sale.date}
-              </span>
+              <div>
+                <strong>{sale.productName}</strong>
+                <p className="muted">Revenue Rs {sale.totalRevenue}</p>
+              </div>
+              <span>{sale.quantity} units on {sale.date}</span>
             </div>
           ))}
         </div>

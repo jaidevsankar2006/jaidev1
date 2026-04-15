@@ -99,9 +99,28 @@
       "quantity": 0,
       "minStock": 0,
       "maxStock": 10
+    },
+    {
+      "id": "prod-0b90b163",
+      "name": "juice",
+      "sku": "2",
+      "categoryId": "cat-1",
+      "supplierId": "sup-1",
+      "price": 799,
+      "quantity": 956,
+      "minStock": 7,
+      "maxStock": 100
     }
   ],
   "purchases": [
+    {
+      "id": "pur-a426093c",
+      "productId": "prod-0b90b163",
+      "supplierId": "sup-1",
+      "quantity": 900,
+      "unitCost": 78,
+      "date": "2026-04-09"
+    },
     {
       "id": "pur-1",
       "productId": "prod-1",
@@ -120,6 +139,13 @@
     }
   ],
   "sales": [
+    {
+      "id": "sale-c0e67dc4",
+      "productId": "prod-0b90b163",
+      "quantity": 34,
+      "unitPrice": 30,
+      "date": "2026-04-09"
+    },
     {
       "id": "sale-1",
       "productId": "prod-1",

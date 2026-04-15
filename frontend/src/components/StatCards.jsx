@@ -1,11 +1,17 @@
 export function StatCards({ stats }) {
+  function formatCurrency(value) {
+    return `Rs ${Number(value || 0).toLocaleString("en-IN", {
+      maximumFractionDigits: 2
+    })}`;
+  }
+
   const items = [
     { label: "Products", value: stats.totalProducts },
     { label: "Units in Stock", value: stats.totalUnits },
     { label: "Suppliers", value: stats.totalSuppliers },
-    { label: "Sales Revenue", value: `Rs ${stats.totalSalesRevenue}` },
-    { label: "Purchase Spend", value: `Rs ${stats.totalPurchaseSpend}` },
-    { label: "Stock Value", value: `Rs ${stats.totalStockValue}` }
+    { label: "Sales Revenue", value: formatCurrency(stats.totalSalesRevenue) },
+    { label: "Purchase Spend", value: formatCurrency(stats.totalPurchaseSpend) },
+    { label: "Stock Value", value: formatCurrency(stats.totalStockValue) }
   ];
 
   return (
