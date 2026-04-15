@@ -1,4 +1,6 @@
-const API_BASE_URL = "/api";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.PROD ? "/_/backend/api" : "/api");
 
 async function parseResponse(response) {
   const payload = await response.json();
