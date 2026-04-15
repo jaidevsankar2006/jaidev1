@@ -7,6 +7,30 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
+function isAllowedOrigin(origin) {
+  const configuredOrigins = (env.frontendUrl || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const allowedOrigins = new Set([
+    ...configuredOrigins,
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+  ]);
+
+  if (allowedOrigins.has(origin)) {
+    return true;
+  }
+
+  try {
+    const { hostname } = new URL(origin);
+    return hostname.endsWith(".vercel.app");
+  } catch {
+    return false;
+  }
+}
+
 app.use(
   cors({
     origin(origin, callback) {
@@ -15,13 +39,7 @@ app.use(
         return;
       }
 
-      const allowedOrigins = new Set([
-        env.frontendUrl,
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-      ]);
-
-      if (allowedOrigins.has(origin)) {
+      if (isAllowedOrigin(origin)) {
         callback(null, true);
         return;
       }
