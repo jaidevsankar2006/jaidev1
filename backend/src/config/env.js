@@ -11,6 +11,7 @@ function getDatabaseConfigFromUrl(databaseUrl) {
 
   try {
     const parsed = new URL(databaseUrl);
+    const sslMode = parsed.searchParams.get("ssl-mode") || parsed.searchParams.get("sslmode");
 
     return {
       dbHost: parsed.hostname,
@@ -18,6 +19,7 @@ function getDatabaseConfigFromUrl(databaseUrl) {
       dbUser: decodeURIComponent(parsed.username),
       dbPassword: decodeURIComponent(parsed.password),
       dbName: parsed.pathname.replace(/^\//, ""),
+      dbSslMode: sslMode ? sslMode.toLowerCase() : "",
     };
   } catch {
     return null;
@@ -57,4 +59,10 @@ export const env = {
     process.env.MYSQLDATABASE ||
     urlConfig?.dbName ||
     "optimized_retail_inventory",
+  dbSslMode: (
+    process.env.DB_SSL_MODE ||
+    process.env.MYSQL_SSL_MODE ||
+    urlConfig?.dbSslMode ||
+    ""
+  ).toLowerCase(),
 };

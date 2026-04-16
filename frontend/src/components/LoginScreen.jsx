@@ -124,16 +124,7 @@ export function LoginScreen({
 
             {notice ? <p className="success-banner">{notice}</p> : null}
 
-            <div className="demo-panel">
-              <strong>
-                {authMode === "login" ? "Login Access" : "Register Access"}
-              </strong>
-              <span>
-                {authMode === "login"
-                  ? "`admin@retailflow.com` / `Admin@123`"
-                  : "New registrations create normal user accounts."}
-              </span>
-            </div>
+            
           </div>
         </div>
       </div>
