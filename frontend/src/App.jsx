@@ -5,12 +5,10 @@ import { CategoriesPanel } from "./components/CategoriesPanel.jsx";
 import { InsightsPanel } from "./components/InsightsPanel.jsx";
 import { LoginScreen } from "./components/LoginScreen.jsx";
 import { ProductsPanel } from "./components/ProductsPanel.jsx";
-import { RecentActivityPanel } from "./components/RecentActivityPanel.jsx";
 import { ReportsPanel } from "./components/ReportsPanel.jsx";
 import { StatCards } from "./components/StatCards.jsx";
 import { SuppliersPanel } from "./components/SuppliersPanel.jsx";
 import { TransactionsPanel } from "./components/TransactionsPanel.jsx";
-import { UserInventoryPanel } from "./components/UserInventoryPanel.jsx";
 import "./styles/app.css";
 
 const initialLoginForm = {
@@ -270,7 +268,7 @@ export default function App() {
             from one full-stack dashboard.
           </p>
           <div className="hero-meta">
-            <span className="tag-chip">Role: {user.role}</span>
+            <span className="tag-chip">Shared inventory access</span>
             <span className="tag-chip">Frontend + Backend ready</span>
           </div>
         </div>
@@ -301,36 +299,34 @@ export default function App() {
         topSelling={bootstrap.dashboard.topSelling}
       />
 
-      {user.role === "admin" ? (
-        <>
-          <section className="panel-grid two-up">
-            <CategoriesPanel
-              categories={bootstrap.categories}
-              form={categoryForm}
-              onChange={handleInputChange(setCategoryForm)}
-              onSubmit={(event) => {
-                event.preventDefault();
-                void handleCreate("categories", categoryForm, () => setCategoryForm(emptyCategoryForm), "Category");
-              }}
-            />
+      <section className="panel-grid two-up">
+        <CategoriesPanel
+          categories={bootstrap.categories}
+          form={categoryForm}
+          onChange={handleInputChange(setCategoryForm)}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void handleCreate("categories", categoryForm, () => setCategoryForm(emptyCategoryForm), "Category");
+          }}
+        />
 
-            <SuppliersPanel
-              suppliers={bootstrap.suppliers}
-              form={supplierForm}
-              onChange={handleInputChange(setSupplierForm)}
-              onSubmit={(event) => {
-                event.preventDefault();
-                void handleCreate("suppliers", supplierForm, () => setSupplierForm(emptySupplierForm), "Supplier");
-              }}
-            />
-          </section>
+        <SuppliersPanel
+          suppliers={bootstrap.suppliers}
+          form={supplierForm}
+          onChange={handleInputChange(setSupplierForm)}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void handleCreate("suppliers", supplierForm, () => setSupplierForm(emptySupplierForm), "Supplier");
+          }}
+        />
+      </section>
 
-          <ProductsPanel
-            products={filteredProducts}
-            categories={bootstrap.categories}
-            suppliers={bootstrap.suppliers}
-            categoryMap={categoryMap}
-            supplierMap={supplierMap}
+      <ProductsPanel
+        products={filteredProducts}
+        categories={bootstrap.categories}
+        suppliers={bootstrap.suppliers}
+        categoryMap={categoryMap}
+        supplierMap={supplierMap}
         filters={filters}
         form={productForm}
         onDelete={(product) => {
@@ -345,43 +341,29 @@ export default function App() {
         onChange={handleInputChange(setProductForm)}
         onFilterChange={handleInputChange(setFilters)}
         onSubmit={(event) => {
-              event.preventDefault();
-              void handleCreate("products", productForm, () => setProductForm(emptyProductForm), "Product");
-            }}
-          />
+          event.preventDefault();
+          void handleCreate("products", productForm, () => setProductForm(emptyProductForm), "Product");
+        }}
+      />
 
-          <TransactionsPanel
-            products={bootstrap.products}
-            suppliers={bootstrap.suppliers}
-            purchaseForm={purchaseForm}
-            saleForm={saleForm}
-            onPurchaseChange={handleInputChange(setPurchaseForm)}
-            onSaleChange={handleInputChange(setSaleForm)}
-            onPurchaseSubmit={(event) => {
-              event.preventDefault();
-              void handleCreate("purchases", purchaseForm, () => setPurchaseForm(createInitialPurchaseForm()), "Purchase");
-            }}
-            onSaleSubmit={(event) => {
-              event.preventDefault();
-              void handleCreate("sales", saleForm, () => setSaleForm(createInitialSaleForm()), "Sale");
-            }}
-            purchases={bootstrap.purchases}
-            sales={bootstrap.sales}
-          />
-        </>
-      ) : (
-        <>
-          <UserInventoryPanel
-            products={filteredProducts}
-            categoryMap={categoryMap}
-            supplierMap={supplierMap}
-          />
-          <RecentActivityPanel
-            purchases={bootstrap.purchases}
-            sales={bootstrap.sales}
-          />
-        </>
-      )}
+      <TransactionsPanel
+        products={bootstrap.products}
+        suppliers={bootstrap.suppliers}
+        purchaseForm={purchaseForm}
+        saleForm={saleForm}
+        onPurchaseChange={handleInputChange(setPurchaseForm)}
+        onSaleChange={handleInputChange(setSaleForm)}
+        onPurchaseSubmit={(event) => {
+          event.preventDefault();
+          void handleCreate("purchases", purchaseForm, () => setPurchaseForm(createInitialPurchaseForm()), "Purchase");
+        }}
+        onSaleSubmit={(event) => {
+          event.preventDefault();
+          void handleCreate("sales", saleForm, () => setSaleForm(createInitialSaleForm()), "Sale");
+        }}
+        purchases={bootstrap.purchases}
+        sales={bootstrap.sales}
+      />
     </main>
   );
 }
