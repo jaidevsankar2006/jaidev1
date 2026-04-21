@@ -2,6 +2,8 @@ import crypto from "node:crypto";
 import { createUserRecord, findUserByEmail } from "../data/store.js";
 import { hashText } from "../utils/hash.js";
 
+const FULL_ACCESS_ROLE = "admin";
+
 function createId(prefix) {
   return `${prefix}-${crypto.randomBytes(4).toString("hex")}`;
 }
@@ -29,9 +31,9 @@ export async function login(request, response, next) {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: FULL_ACCESS_ROLE
       },
-      token: `demo-token-${user.role}`
+      token: `demo-token-${FULL_ACCESS_ROLE}`
     });
   } catch (error) {
     next(error);
@@ -43,7 +45,7 @@ export async function register(request, response, next) {
     const name = String(request.body.name || "").trim();
     const email = String(request.body.email || "").trim().toLowerCase();
     const password = String(request.body.password || "");
-    const role = "staff";
+    const role = FULL_ACCESS_ROLE;
 
     if (!name || !email || !password) {
       const error = new Error("Name, email, and password are required.");
@@ -80,9 +82,9 @@ export async function register(request, response, next) {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: FULL_ACCESS_ROLE,
       },
-      token: `demo-token-${user.role}`,
+      token: `demo-token-${FULL_ACCESS_ROLE}`,
     });
   } catch (error) {
     next(error);
