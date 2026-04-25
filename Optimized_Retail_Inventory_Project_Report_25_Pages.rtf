@@ -1,0 +1,271 @@
+{\rtf1\ansi\deff0
+{\fonttbl{\f0 Calibri;}{\f1 Cambria;}}
+\paperw12240\paperh15840\margl1440\margr1440\margt1200\margb1200
+\fs24
+\pard\qc\b\f1\fs42 OPTIMIZED RETAIL INVENTORY MANAGEMENT SYSTEM\par
+\fs28 A Full-Stack Retail Stock Control and Analytics Platform\par\par
+\b0\f0\fs24 Submitted By: Jaidev Sankar\par
+Project Type: Final Year Project Report\par
+Frontend: React + Vite\par
+Backend: Node.js + Express\par
+Database: MySQL\par
+Deployment: Vercel + Render + Aiven MySQL\par
+Date of Submission: April 2026\par
+\page
+\pard\b\f1\fs32 ABSTRACT\par\par
+\b0\f0\fs24 The Optimized Retail Inventory Management System is a full-stack web application designed to improve the way retail stores manage stock, suppliers, purchases, sales, and dashboard-level inventory analysis. The project replaces manual, spreadsheet-based stock handling with a centralized browser-based solution that stores all operational records in MySQL and exposes them through a React frontend and an Express backend. The final implementation supports category management, supplier management, product creation, inline quantity editing, purchase entry, sales entry, low-stock alerts, overstock awareness, reorder suggestions, and recent stock movement analysis.\par\par
+The project also demonstrates real deployment work. The frontend was deployed on Vercel, the backend on Render, and the MySQL database on Aiven. Deployment required cloud-oriented environment management, SSL-aware database connection handling, frontend-to-backend API routing, and configuration debugging. This report follows the style of the sample document you attached and presents the project in a full academic-report structure with descriptive sections, tables, and implementation-centered explanation.\par
+\page
+\pard\b\f1\fs32 01  PROJECT OVERVIEW\par\par
+\b0\f0\fs24 Project Title: Optimized Retail Inventory Management System Using Full-Stack Web Development.\par\par
+The aim of this project is to create a practical retail inventory platform that allows store operators to manage products, suppliers, stock movement, and stock intelligence from a single digital dashboard. In many small and medium retail businesses, inventory is still maintained manually or through disconnected spreadsheet files. This leads to delays in stock updates, poor visibility into product movement, confusion about supplier relationships, and difficulty in identifying which products need replenishment.\par\par
+The system built in this project addresses those challenges by centralizing all core inventory entities into a MySQL-backed data model and exposing them through a user-friendly interface. The application allows categories and suppliers to be created, products to be inserted, quantities to be modified directly from the product table, purchases and sales to be recorded, and stock analytics to be computed from actual transaction history. The result is a stronger, more accurate, and more understandable inventory workflow.\par\par
+An additional refinement in the project was the move toward shared operational access. Rather than treating one user account as the only account that can manage stock, the final project direction is that all authenticated users should reach the same operational dashboard and be able to change stock values and transaction records.\par
+\page
+\pard\b\f1\fs30 1.1  PROBLEM STATEMENT\par\par
+\b0\f0\fs24 Retail inventory management becomes difficult when product records, supplier details, and movement logs are not connected in one system. A spreadsheet may show current stock, but it may not explain when stock was last updated or which purchase or sale caused the change. Supplier information may exist in another file or may be incomplete. This fragmentation leads to a high chance of inaccurate stock counts and poor reorder decisions.\par\par
+The business risks are significant. If stock is lower than expected, customer orders may fail and sales opportunities are lost. If stock is higher than expected, money is tied up in slow-moving products. If supplier records are inconsistent, purchasing becomes inefficient and time-consuming. In short, the absence of a single digital workflow creates both operational and financial inefficiency.\par\par
+The problem solved by this project is therefore clear: retail users need one connected inventory dashboard where they can manage categories, suppliers, products, quantity edits, purchases, sales, and stock analysis in one place. The Optimized Retail Inventory Management System was created to deliver exactly that solution.\par
+\page
+\pard\b\f1\fs30 1.2  PROJECT OBJECTIVES\par\par
+\b0\f0\fs24 The project objectives are presented below.\par\par
+\trowd\trgaph108\trleft0
+\cellx1600\cellx7000\cellx10800
+\intbl\b Objective No.\cell Objective\cell Expected Outcome\cell\row
+\intbl\b0 1\cell Build a complete full-stack inventory system\cell Working frontend, backend, and MySQL integration\cell\row
+\intbl 2\cell Centralize product, supplier, and transaction records\cell Unified operational workflow\cell\row
+\intbl 3\cell Support direct quantity editing and transaction-based stock changes\cell Accurate stock visibility\cell\row
+\intbl 4\cell Provide alerts and reorder guidance\cell Better stock planning\cell\row
+\intbl 5\cell Deploy the system online\cell Real-world demonstration value\cell\row
+\intbl 6\cell Support shared operational access\cell Collaborative stock management\cell\row
+\pard\par
+These objectives combine both technical and business goals. The project was not intended to stop at interface creation. It was also designed to deliver practical value to retail decision-making and to prove deployable full-stack competence.\par
+\page
+\pard\b\f1\fs30 1.3  TOOLS AND TECHNOLOGIES USED\par\par
+\b0\f0\fs24 A modern and practical technology stack was selected for the project.\par\par
+\trowd\trgaph108\trleft0
+\cellx2600\cellx5400\cellx10800
+\intbl\b Tool / Technology\cell Version / Platform\cell Purpose in This Project\cell\row
+\intbl\b0 React\cell 19.1.0\cell Build reusable dashboard components and UI state\cell\row
+\intbl Vite\cell 6.3.5\cell Frontend development server and production build\cell\row
+\intbl Node.js\cell Runtime\cell Execute server-side JavaScript\cell\row
+\intbl Express\cell 4.19.2\cell Backend routing and API logic\cell\row
+\intbl MySQL\cell Relational database\cell Persistent storage of all inventory entities\cell\row
+\intbl mysql2\cell 3.21.1\cell Database driver used by Node.js\cell\row
+\intbl dotenv\cell 17.4.1\cell Local and deployed environment management\cell\row
+\intbl cors\cell 2.8.5\cell Cross-origin API communication\cell\row
+\intbl Vercel\cell Cloud platform\cell Frontend deployment\cell\row
+\intbl Render\cell Cloud platform\cell Backend deployment\cell\row
+\intbl Aiven\cell Managed database platform\cell Cloud MySQL hosting with SSL\cell\row
+\pard\par
+Each of these technologies contributes to a specific layer of the final system. Their combination creates a complete academic full-stack solution.\par
+\page
+\pard\b\f1\fs30 1.4  END-TO-END SYSTEM WORKFLOW\par\par
+\b0\f0\fs24 The system workflow begins when a user logs in or registers. After successful authentication, the frontend requests a bootstrap response from the backend. This response contains categories, suppliers, products, purchases, sales, dashboard summaries, alerts, and recent movement data.\par\par
+Once the dashboard is loaded, the operator can work in three major ways. First, the operator can create or maintain master data such as categories and suppliers. Second, the operator can create products and edit their stock quantities. Third, the operator can record purchases and sales, which change stock movement and update analytics.\par\par
+After every successful change, the dashboard refreshes and recalculates stock status and reorder guidance. This means the user always sees an up-to-date picture of inventory operations.\par
+\page
+\pard\b\f1\fs32 02  REQUIREMENT ANALYSIS\par\par
+\b0\f0\fs24 Requirement analysis focused on the actual information a retail business needs every day. The system must show what products exist, where they come from, how much stock is available, what recent purchases and sales occurred, and whether a product should be reordered soon. These needs shaped the structure of the application.\par\par
+The frontend requirements emphasized simplicity and speed. The user should not need many pages to manage the store. Search, filtering, product creation, stock editing, and supplier management should be available in one main dashboard. The backend requirements emphasized validation, consistency, and reliable database integration.\par\par
+Because the final application was also deployed online, deployment behavior became part of the requirement analysis too. The solution had to work correctly with frontend and backend separation, cloud database hosting, and secure configuration management.\par
+\page
+\pard\b\f1\fs30 2.1  FUNCTIONAL REQUIREMENTS\par\par
+\b0\f0\fs24 The major functional requirements implemented in the project are listed below.\par\par
+\trowd\trgaph108\trleft0
+\cellx3200\cellx7800\cellx10800
+\intbl\b Requirement\cell Description\cell Status\cell\row
+\intbl\b0 User registration\cell Create account using name, email, and password\cell Implemented\cell\row
+\intbl User login\cell Authenticate account and open dashboard\cell Implemented\cell\row
+\intbl Category management\cell Add and list categories\cell Implemented\cell\row
+\intbl Supplier management\cell Add and list suppliers\cell Implemented\cell\row
+\intbl Product management\cell Add, list, filter, and delete products\cell Implemented\cell\row
+\intbl Quantity editing\cell Update stock directly from products table\cell Implemented\cell\row
+\intbl Purchase entry\cell Record stock inflow\cell Implemented\cell\row
+\intbl Sales entry\cell Record stock outflow\cell Implemented\cell\row
+\intbl Dashboard analytics\cell Show stats, alerts, and reorder guidance\cell Implemented\cell\row
+\pard\par
+Together these functions demonstrate that the project is operationally complete for the target use case.\par
+\page
+\pard\b\f1\fs30 2.2  NON-FUNCTIONAL REQUIREMENTS\par\par
+\b0\f0\fs24 Usability was a major non-functional requirement. The dashboard needed to remain clear, readable, and visually organized despite supporting many operations in one page. This is why the application uses distinct cards, tables, panel headers, and colored action buttons.\par\par
+Reliability was another important requirement. The backend should not continue silently when database configuration is broken. Instead, it should fail clearly at startup and allow troubleshooting through logs. This behavior became especially useful during deployment.\par\par
+Maintainability was addressed by modular code organization. Frontend logic is separated into components and backend logic is separated into routes, controllers, store functions, and utility functions. This allowed the application to evolve without a complete rewrite.\par
+\page
+\pard\b\f1\fs32 03  SYSTEM ARCHITECTURE\par\par
+\b0\f0\fs24 The project follows a layered architecture: presentation layer, application layer, and data layer. The presentation layer is the React frontend. The application layer is the Express backend. The data layer is the MySQL database.\par\par
+The frontend communicates with the backend through REST-style JSON requests. The backend validates requests, processes business logic, and communicates with MySQL. The database stores operational records in normalized tables.\par\par
+This design reduces coupling and supports easier debugging, better maintainability, and clearer project explanation in a report setting.\par
+\page
+\pard\b\f1\fs30 3.1  FRONTEND ARCHITECTURE\par\par
+\b0\f0\fs24 The frontend is organized around the main App component, which controls authentication state, dashboard loading, form state, and UI feedback. Once authentication succeeds, the dashboard renders a complete set of components for operational work.\par\par
+The most important interface areas are the statistics cards, reports panel, alerts panel, insights panel, categories panel, suppliers panel, products panel, and transactions panel. This breakdown makes the dashboard easy to explain and easy to extend.\par\par
+The ProductsPanel is particularly important because it combines data listing and stock action in one place. This supports a realistic inventory workflow where speed matters.\par
+\page
+\pard\b\f1\fs30 3.2  BACKEND ARCHITECTURE\par\par
+\b0\f0\fs24 The backend is organized into route files, controller files, store files, and utility files. Authentication routes handle login and registration. Inventory routes handle category creation, supplier creation, product creation, quantity editing, purchase recording, sale recording, product deletion, and bootstrap loading.\par\par
+Controllers handle request parsing and validation. Store functions handle SQL execution. Utility functions handle derived inventory calculations. This separation improves readability and keeps responsibilities clear.\par\par
+Because the structure is modular, new rules or features can be added with less risk of breaking unrelated parts of the codebase.\par
+\page
+\pard\b\f1\fs30 3.3  IMPORTANT API ROUTES\par\par
+\b0\f0\fs24 The main backend routes implemented in the project are shown below.\par\par
+\trowd\trgaph108\trleft0
+\cellx4200\cellx5600\cellx10800
+\intbl\b Route\cell Method\cell Purpose\cell\row
+\intbl\b0 /api/auth/login\cell POST\cell Authenticate an existing user\cell\row
+\intbl /api/auth/register\cell POST\cell Create a new account\cell\row
+\intbl /api/inventory/bootstrap\cell GET\cell Return dashboard-ready data bundle\cell\row
+\intbl /api/inventory/categories\cell POST\cell Create category\cell\row
+\intbl /api/inventory/products\cell POST\cell Create product\cell\row
+\intbl /api/inventory/products/:id/quantity\cell PATCH\cell Update stock quantity\cell\row
+\intbl /api/inventory/products/:id\cell DELETE\cell Delete product\cell\row
+\intbl /api/inventory/suppliers\cell POST\cell Create supplier\cell\row
+\intbl /api/inventory/purchases\cell POST\cell Record purchase\cell\row
+\intbl /api/inventory/sales\cell POST\cell Record sale\cell\row
+\pard\par
+\page
+\pard\b\f1\fs30 3.4  DATABASE DESIGN\par\par
+\b0\f0\fs24 The database schema uses six primary tables: users, categories, suppliers, products, purchases, and sales. Products reference categories and suppliers. Purchases reference products and suppliers. Sales reference products. This relational structure protects data consistency and supports reporting.\par\par
+The products table is central to the project because it stores SKU, price, quantity, minimum stock, and maximum stock values. These fields are later used in stock status and reorder logic. Purchases and sales then provide the movement history that makes the analytics meaningful.\par\par
+The role field in the users table remains in the schema because it was part of an earlier version, but the final project requirement is that all users should access the same inventory dashboard.\par
+\page
+\pard\b\f1\fs32 04  IMPLEMENTATION DETAILS\par\par
+\b0\f0\fs24 Implementation started with the relational schema and seed data so the dashboard could be built and tested against real records. After database setup, the backend API was developed around route handlers and validation logic. The frontend then consumed those APIs and rendered the operational dashboard.\par\par
+This staged approach helped reduce complexity during development. Instead of trying to build everything at once, each layer could be verified separately and then integrated. This also made deployment troubleshooting easier later because the team could reason about which layer was failing.\par\par
+The implementation demonstrates not only feature completeness, but also the benefit of modular design in a full-stack academic project.\par
+\page
+\pard\b\f1\fs30 4.1  AUTHENTICATION IMPLEMENTATION\par\par
+\b0\f0\fs24 Registration accepts a name, email, and password. The backend checks that the fields are present, ensures the password is sufficiently long, normalizes the email, prevents duplicate email registration, and hashes the password before storing it.\par\par
+Login validates the provided password against the stored password hash. If authentication succeeds, the backend returns a user object and token. The frontend uses that result to transition from the login page to the dashboard.\par\par
+This authentication design is lightweight but sufficient for the project scope and supports both local and deployed execution.\par
+\page
+\pard\b\f1\fs30 4.2  CATEGORY, SUPPLIER, AND PRODUCT IMPLEMENTATION\par\par
+\b0\f0\fs24 Categories and suppliers were implemented first because product creation depends on them. Suppliers store identity and contact details, while categories group products logically. Product creation then combines the master data references with inventory-specific fields such as price, opening stock, minimum stock, and maximum stock.\par\par
+The product creation flow includes backend validation for duplicate SKU values, missing references, invalid numbers, and impossible stock thresholds. This prevents data problems from spreading through the rest of the dashboard.\par\par
+On the frontend, these forms are placed in visible dashboard panels so the user can create supporting data and products without leaving the main page.\par
+\page
+\pard\b\f1\fs30 4.3  INLINE QUANTITY EDITING IMPLEMENTATION\par\par
+\b0\f0\fs24 The quantity editor is one of the strongest practical features in the project. Instead of forcing users to open a dedicated edit screen, the products table lets them type a new quantity value directly and save or cancel the change from the same row.\par\par
+This behavior is well suited to real store environments where quantity corrections are frequent. Physical stock counts, damaged goods, or receiving adjustments often require immediate correction. The inline editor supports this workflow naturally.\par\par
+After a quantity update, the backend writes the change to the database and the dashboard refreshes, making the new stock status and reorder value visible at once.\par
+\page
+\pard\b\f1\fs30 4.4  PURCHASES, SALES, AND MOVEMENT TRACKING\par\par
+\b0\f0\fs24 Purchases and sales are the transactional backbone of the system. Purchase entries increase stock, while sales decrease stock. Each transaction is stored with date and pricing information, making it possible to build historical movement reporting and financial summaries.\par\par
+The backend validates that a sale cannot exceed available stock. This protects against impossible negative quantities and keeps the data trustworthy. Purchases and sales are also enriched with readable product and supplier information for the dashboard.\par\par
+Recent movement tracking merges both transaction types into one chronological list so the user can quickly see what changed most recently.\par
+\page
+\pard\b\f1\fs32 05  STOCK ANALYTICS, ALERTS, AND REORDER RECOMMENDATIONS\par\par
+\b0\f0\fs24 The analytical layer of the project is what makes it more than a basic stock register. For every product, the system computes stock value, status, estimated monthly sales, reorder point, and suggested reorder quantity. These are derived values, not fixed fields manually entered by the user.\par\par
+The status logic compares quantity to min and max stock levels. The reorder logic takes into account recent sales, which makes it more useful than a static threshold alone. The stock value calculation gives a quick estimate of inventory worth using current quantity and price.\par\par
+These calculations are then aggregated into dashboard cards, alerts, top-selling summaries, and reorder lists. This gives the operator actionable information rather than only raw records.\par
+\page
+\pard\b\f1\fs30 5.1  ANALYTICS SUMMARY TABLE\par\par
+\b0\f0\fs24 The main metrics and derived values are summarized below.\\par\\par
+\trowd\trgaph108\trleft0
+\cellx3000\cellx7200\cellx10800
+\intbl\b Metric\cell How It Is Derived\cell Operational Value\cell\row
+\intbl\b0 Stock Status\cell Compare quantity with min and max stock\cell Immediate stock-health visibility\cell\row
+\intbl Stock Value\cell quantity * price\cell Estimate of total inventory value\cell\row
+\intbl Monthly Sales\cell Average recorded sale quantities\cell Demand approximation\cell\row
+\intbl Reorder Point\cell max(minStock, ceil(monthlySales*1.2))\cell Restocking threshold\cell\row
+\intbl Suggested Reorder Qty\cell reorderPoint + minStock - quantity\cell Purchase guidance\cell\row
+\pard\par
+\page
+\pard\b\f1\fs32 06  SEEDED DATA AND DEMONSTRATION RECORDS\par\par
+\b0\f0\fs24 The project includes a seed file that inserts practical sample records into the database. This seeded dataset includes categories, suppliers, products, purchases, and sales. It was necessary because dashboard features such as low-stock alerts and reorder calculations are difficult to demonstrate without realistic data.\par\par
+The sample products represent different quantity conditions so the dashboard can show low-stock and overstock examples immediately. This helped greatly during development, testing, and presentation preparation.\par\par
+Screenshot Instruction: Insert a screenshot of the seeded product table, including the quantity editor, status pill, reorder column, and delete action.\par
+\page
+\pard\b\f1\fs32 07  CLOUD DEPLOYMENT\par\par
+\b0\f0\fs24 The completed project was deployed using three cloud services. Vercel hosts the frontend, Render hosts the Express backend, and Aiven hosts the MySQL database. This creates a production-style architecture in which each layer is responsible for one part of the system.\par\par
+Cloud deployment required explicit environment variables. The backend required DB host, DB port, DB user, DB password, DB name, DB SSL mode, frontend URL, and port. The frontend required the backend API base URL. The cloud MySQL database required SSL support.\par\par
+Once configured correctly, the deployment proved that the application works as a real online full-stack system.\par
+\page
+\pard\b\f1\fs30 7.1  DEPLOYMENT ISSUES AND FIXES\par\par
+\b0\f0\fs24 The deployment process included several realistic issues: attempts to connect to localhost from the cloud, invalid or outdated Aiven host values, password mismatches, SSL requirements, incorrect database names, CORS errors, and frontend requests pointing to the wrong backend URL.\par\par
+These were resolved through repeated inspection of Render logs, Vercel settings, Aiven connection details, and backend startup behavior. One important lesson was that deployment errors often come from configuration mismatches rather than code defects.\par\par
+Documenting these fixes is valuable because it demonstrates that the project owner can not only build the system, but also operate and troubleshoot it in a deployed environment.\par
+\page
+\pard\b\f1\fs32 08  TESTING STRATEGY AND RESULTS\par\par
+\b0\f0\fs24 Testing was performed at multiple levels. The first level was functional testing of application features: registration, login, categories, suppliers, product creation, quantity updates, purchases, sales, and deletion. The second level was validation testing for bad inputs and conflicting data. The third level was deployment testing for online execution.\par\par
+Because the system handles live stock, validation testing was particularly important. The backend needed to prevent impossible sales, reject invalid numbers, and preserve uniqueness rules. These checks were confirmed through repeated manual tests.\par\par
+Deployment testing verified that the backend could connect to Aiven MySQL, that the frontend could reach the backend API, and that the correct schema was being used in production.\par
+\page
+\pard\b\f1\fs30 8.1  TEST CASE TABLE\par\par
+\b0\f0\fs24 Representative test cases are summarized below.\\par\\par
+\trowd\trgaph108\trleft0
+\cellx3200\cellx7600\cellx10800
+\intbl\b Test Case\cell Expected Result\cell Actual Result\cell\row
+\intbl\b0 Register new user\cell Account stored and ready for login\cell Successful\cell\row
+\intbl Login with wrong password\cell Invalid credentials error\cell Successful\cell\row
+\intbl Add new supplier\cell Supplier appears in dashboard\cell Successful\cell\row
+\intbl Add new product\cell Product row created\cell Successful\cell\row
+\intbl Edit quantity\cell Quantity changed and status refreshed\cell Successful\cell\row
+\intbl Record sale beyond stock\cell Request rejected\cell Successful\cell\row
+\intbl Open deployed backend\cell API starts normally\cell Successful after environment fixes\cell\row
+\pard\par
+\page
+\pard\b\f1\fs32 09  USER INTERFACE AND SCREEN PRESENTATION\par\par
+\b0\f0\fs24 The user interface design is modern, colorful, and clearly structured. The dark theme makes the dashboard visually strong, while the bright orange and blue action buttons help the user locate key actions quickly. The sections are grouped logically so the operator can move from master data to product management to transactions without leaving the dashboard.\par\par
+This layout supports both usability and presentation quality. Screenshots of the categories and suppliers panel, products panel, and transactions panel make the report look complete and also prove that the system is functionally usable. The product section is especially strong because it shows operational features and stock analysis together.\par\par
+Screenshot Instruction: Insert the provided screenshots of the products section and categories/suppliers section here and add captions such as Figure 1 - Shared Product Management Panel and Figure 2 - Categories and Suppliers Panel.\par
+\page
+\pard\b\f1\fs32 10  CHALLENGES FACED DURING DEVELOPMENT\par\par
+\b0\f0\fs24 One major challenge was adapting the system from a role-divided dashboard model to a shared-access inventory model. Another challenge was balancing many operational controls in one page without creating a confusing interface. The products section, in particular, had to remain useful while supporting filters, creation, editing, and deletion.\par\par
+A third challenge was cloud database deployment. Problems such as wrong hostnames, invalid passwords, SSL requirements, and incorrect database names repeatedly interrupted backend startup until the correct values were used. These problems were resolved through careful investigation and iterative correction.\par\par
+These challenges improved the system overall because they forced clearer structure, stronger validation, and better deployment discipline.\par
+\page
+\pard\b\f1\fs32 11  SECURITY, VALIDATION, AND MAINTAINABILITY\par\par
+\b0\f0\fs24 Security in this project is basic but important. Passwords are hashed before storage, and backend validation prevents invalid data from reaching the database. Required fields, numeric ranges, duplicate records, and stock violations are all checked server-side.\par\par
+The codebase is maintainable because it is modular. Frontend logic is broken into focused components. Backend logic is split between routes, controllers, store functions, and utilities. This separation made later changes easier, including the shared-access behavior change.\par\par
+Such maintainability is important in academic projects because it shows that the system can evolve rather than collapse when one requirement changes.\par
+\page
+\pard\b\f1\fs32 12  RESULTS AND OUTCOMES\par\par
+\b0\f0\fs24 The project successfully delivered a working full-stack inventory platform with online deployment. It supports stock maintenance, supplier management, category management, purchases, sales, quantity editing, alerts, reorder logic, and dashboard reporting.\\par\\par
+From a technical perspective, the project demonstrates frontend design, backend API development, SQL schema management, environment configuration, cloud deployment, and troubleshooting. From a business perspective, it gives the store a stronger way to understand stock and make better replenishment decisions.\\par\\par
+The outcome is therefore both academically strong and practically meaningful.\\par
+\page
+\pard\b\f1\fs32 13  CONCLUSION\par\par
+\b0\f0\fs24 The Optimized Retail Inventory Management System fulfills its purpose as a digital solution for retail stock handling. It brings together record management, stock visibility, transaction history, and analytical support in one connected application.\\par\\par
+The project also demonstrates the broader lesson that full-stack development includes architecture, validation, deployment, debugging, and requirement adaptation. The finished system reflects all of those elements.\\par\\par
+With screenshots inserted and final formatting reviewed, this document is suitable for academic project submission.\\par
+\page
+\pard\b\f1\fs32 14  FUTURE ENHANCEMENTS\par\par
+\b0\f0\fs24 Future enhancements can include barcode scanning, CSV import and export, invoice generation, branch-wise stock tracking, richer reporting, and more advanced demand forecasting.\\par\\par
+The current reorder logic could be enhanced with weighted recent demand, seasonal behavior, category trends, and profitability measures.\\par\\par
+A configurable permissions model could also be reintroduced later if the business needs separate operational roles.\\par
+\page
+\pard\b\f1\fs32 APPENDIX A  DATABASE TABLE SUMMARY\par\par
+\b0\f0\fs24 \trowd\trgaph108\trleft0
+\cellx2600\cellx6200\cellx10800
+\intbl\b Table\cell Description\cell Important Fields\cell\row
+\intbl\b0 users\cell Authentication and identity records\cell id, name, email, password_hash, role\cell\row
+\intbl categories\cell Product grouping\cell id, name\cell\row
+\intbl suppliers\cell Supplier master records\cell id, name, contact_person, phone, email, location\cell\row
+\intbl products\cell Inventory items\cell sku, price, quantity, min_stock, max_stock\cell\row
+\intbl purchases\cell Inbound stock transactions\cell product_id, supplier_id, quantity, unit_cost, date\cell\row
+\intbl sales\cell Outbound stock transactions\cell product_id, quantity, unit_price, date\cell\row
+\pard\par
+\page
+\pard\b\f1\fs32 APPENDIX B  IMPORTANT FILES\par\par
+\b0\f0\fs24 \trowd\trgaph108\trleft0
+\cellx4000\cellx6000\cellx10800
+\intbl\b File\cell Layer\cell Purpose\cell\row
+\intbl\b0 frontend/src/App.jsx\cell Frontend\cell Main dashboard and auth flow\cell\row
+\intbl frontend/src/components/LoginScreen.jsx\cell Frontend\cell Login and registration screen\cell\row
+\intbl frontend/src/components/ProductsPanel.jsx\cell Frontend\cell Product table and quantity editor\cell\row
+\intbl backend/src/controllers/authController.js\cell Backend\cell Login and registration logic\cell\row
+\intbl backend/src/controllers/inventoryController.js\cell Backend\cell Inventory operations and validation\cell\row
+\intbl backend/src/utils/inventory.js\cell Backend\cell Status and reorder calculations\cell\row
+\intbl backend/database/schema.sql\cell Database\cell Table creation script\cell\row
+\intbl backend/database/seed.sql\cell Database\cell Seed records for demo and testing\cell\row
+\pard\par
+\page
+\pard\b\f1\fs32 APPENDIX C  DOCUMENT PREPARATION CHECKLIST\par\par
+\b0\f0\fs24 1. Cover page checked and updated with submission details.\par\par
+2. Screenshots inserted for login, dashboard, product section, supplier section, and deployment proof.\par\par
+3. Database schema and seed verified in the cloud database.\par\par
+4. Backend and frontend environment variables verified.\par\par
+5. Shared access behavior tested for multiple users.\par\par
+6. Grammar, alignment, and captions reviewed before final submission.\par
+}

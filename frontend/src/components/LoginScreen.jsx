@@ -40,8 +40,8 @@ export function LoginScreen({
               <h1>Retail Inventory Control</h1>
               <p className="muted">
                 {authMode === "login"
-                  ? "Sign in with your account to manage the shared inventory dashboard."
-                  : "Create a new account, then log in to manage stock and inventory updates."}
+                  ? "Sign in with your account to open the correct dashboard automatically."
+                  : "Create a new account, then log in to access the inventory system."}
               </p>
             </div>
 
